@@ -5,15 +5,21 @@ const Cockpit = (props) => {
   useEffect(() => { // takes function which will run for every lifecycle
     console.log('[Cockpit.js] useEffect');
     // Http request...
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       alert('Save data to cloud');
     }, 1000);
     return () => {
+      clearTimeout(timer);
       console.log('[Cockpit.js] cleanup work in useEffect');
     };
   }, []); // we want to run this data only if props.persons change, when we pass [] an empty array this will run only one time ---> replace componentDidMount
 
-
+  useEffect(() => {
+    console.log('[Cockpit.js] 2nd useEffect');
+    return () => {
+      console.log('[Cockpit.js] cleanup work in 2nd useEffect');
+    };
+  });
 
   const assignedClasses = [];
   let btnClass = '';
