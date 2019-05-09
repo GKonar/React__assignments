@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import myClasses from './App.module.css';
 
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 
 class App extends Component {
@@ -46,38 +47,33 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
-
     let persons = null;
+    let btnClass = '';
+
     if (this.state.showPersons) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => (
-            <Person
-              click={() => this.deletePersonHandler(index)}
-              name={person.name}
-              age={person.age}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)} // onChange and event.target.value
-            />
+            // eslint-disable-next-line
+            <ErrorBoundary key={person.id}>
+              <Person
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                age={person.age}
+                changed={(event) => this.nameChangedHandler(event, person.id)} // onChange and event.target.value
+              />
+            </ErrorBoundary>
           ))}
         </div>
       );
-      style.backgroundColor = 'red';
+
+      btnClass = myClasses.Red;
     }
 
     let assignedClasses = [];
     if (this.state.persons.length <= 2) {
       assignedClasses.push(myClasses.red); 
     }
-
     if (this.state.persons.length <= 1) {
       assignedClasses.push(myClasses.bold);
     } 
@@ -87,7 +83,7 @@ class App extends Component {
         <h1>Hi, I am a React App</h1>
         <p className={assignedClasses.join(' ')}>This is really working!</p>
         <button
-          style={style}
+          className={btnClass}
           onClick={this.togglePersonsHandler}
         >Toggle Persons
         </button>
@@ -98,7 +94,6 @@ class App extends Component {
 }
 
 export default App;
-
 
 // ES6 arrow functions can’t be bound to a this keyword, so it will lexically go up a scope, and use the value of this in the scope in which it was defined.
 
