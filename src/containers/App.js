@@ -5,6 +5,13 @@ import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
+  constructor(props) {
+    super(props); // that will execute constructor of the component which I am extending
+    //eslint-disable-next-line no-console
+    console.log('[App.js] constructor');
+  }
+
+  // state does everything automatically, add constructor call super(props) and set state in the constructor //
   state = {
     persons: [
       { id: 'qwe', name: 'Max', age: 28 },
@@ -13,8 +20,30 @@ class App extends Component {
     ],
     otherState: 'some other value',
     showPersons: false,
+    showCockpit: true
   };
 
+  static getDerivedStateFromProps(props, state) {
+    //eslint-disable-next-line no-console
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+  
+  componentDidMount() {
+    //eslint-disable-next-line no-console
+    console.log('[App.js] componentDidMount');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    //eslint-disable-next-line no-console
+    console.log('[App.js] shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    //eslint-disable-next-line no-console
+    console.log('[App.js] componentDidUpdate');
+  }
 
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex( p => { // const holds the index 
@@ -46,10 +75,13 @@ class App extends Component {
   }
 
   render() {
+    //eslint-disable-next-line no-console
+    console.log('[App.js] render');
     let persons = null;
 
     if (this.state.showPersons) {
-      persons =  <Persons 
+      persons =  
+      <Persons 
         persons = {this.state.persons}
         clicked = {this.deletePersonHandler}
         changed = {this.nameChangedHandler}
@@ -58,11 +90,17 @@ class App extends Component {
 
     return (
       <div className={myClasses.App}>
-        <Cockpit 
-          persons = {this.state.persons}
-          showPersons = {this.state.showPersons}
-          toggle = {this.togglePersonsHandler}
-        />
+        <button onClick={() => {
+          this.setState({showCockpit: false});
+        }}>Remove Cockpit</button>
+        {this.state.showCockpit ? (
+          <Cockpit 
+            title = {this.props.appTitle}
+            persons = {this.state.persons}
+            showPersons = {this.state.showPersons}
+            toggle = {this.togglePersonsHandler}
+          />
+        ) : null}
         {persons}
       </div>
     );
@@ -78,3 +116,7 @@ export default App;
 
 
 // By manipulating this.state directly you are circumventing React’s state management, which can be potentially dangerous as calling setState() afterwards may replace the mutation you made.
+
+
+// IMPORTANT 
+// In the class based components props are access with the this keyword

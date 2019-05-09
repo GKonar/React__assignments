@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // React hook
 import cockpitStyles from './Cockpit.module.css';
 
-const cockpit = (props) => {
+const Cockpit = (props) => {
+  useEffect(() => { // takes function which will run for every lifecycle
+    console.log('[Cockpit.js] useEffect');
+    // Http request...
+    setTimeout(() => {
+      alert('Save data to cloud');
+    }, 1000);
+    return () => {
+      console.log('[Cockpit.js] cleanup work in useEffect');
+    };
+  }, []); // we want to run this data only if props.persons change, when we pass [] an empty array this will run only one time ---> replace componentDidMount
 
-  let assignedClasses = [];
+
+
+  const assignedClasses = [];
   let btnClass = '';
   if(props.showPersons) {
     btnClass = cockpitStyles.Red;
@@ -18,7 +30,7 @@ const cockpit = (props) => {
   
   return (
     <div className={cockpitStyles.Cockpit}>
-      <h1>Hi, I am a React App</h1>
+      <h1>{props.title}</h1>
       <p className={assignedClasses.join(' ')}>This is really working!</p>
       <button
         className={btnClass}
@@ -29,7 +41,7 @@ const cockpit = (props) => {
   );
 };
 
-export default cockpit;
+export default Cockpit;
 
 
 
