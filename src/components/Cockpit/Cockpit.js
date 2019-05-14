@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'; // React hook
 import cockpitStyles from './Cockpit.module.css';
 
-const Cockpit = (props) => {
+const Cockpit = props => {
 	useEffect(() => {
 		// takes function which will run for every lifecycle
 		console.log('[Cockpit.js] useEffect');
 		// Http request...
 		setTimeout(() => {
-			alert('Save data to cloud');
+			// alert('Save data to cloud');
 		}, 1000);
 		return () => {
 			console.log('[Cockpit.js] cleanup work in useEffect');

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-// import personStyles from './Person.module.css';
-// import Aux from '../../../hoc/Aux'; deprecated
+import personStyles from './Person.module.css';
+import withClass from '../../../hoc/withClass';
+import PropTypes from 'prop-types';
 
+// import Aux from '../../../hoc/Aux'; deprecated
 class Person extends Component {
 	render() {
 		console.log('[Person.js] rendering...');
@@ -17,4 +19,12 @@ class Person extends Component {
 	}
 }
 
-export default Person;
+// Validate prop types
+Person.propTypes = {
+	click: PropTypes.func,
+	name: PropTypes.string,
+	age: PropTypes.number,
+	changed: PropTypes.func
+};
+
+export default withClass(Person, personStyles.Person);

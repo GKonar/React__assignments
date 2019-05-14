@@ -3,11 +3,12 @@ import myClasses from './App.module.css';
 
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
-import WithClass from '../hoc/WithClass';
+import withClass from '../hoc/withClass';
+import Aux from '../hoc/Aux';
 
 class App extends Component {
 	constructor(props) {
-		super(props); // that will execute constructor of the component which I am extending
+		super(props);
 		//eslint-disable-next-line no-console
 		console.log('[App.js] constructor');
 	}
@@ -21,7 +22,8 @@ class App extends Component {
 		],
 		otherState: 'some other value',
 		showPersons: false,
-		showCockpit: true
+		showCockpit: true,
+		changeCounter: 0
 	};
 
 	static getDerivedStateFromProps(props, state) {
@@ -61,7 +63,13 @@ class App extends Component {
 		const persons = [...this.state.persons];
 		persons[personIndex] = person;
 
-		this.setState({ persons: persons });
+		// Correct way to update state when U rely on previous state
+		this.setState((prevState, props) => {
+			return {
+				persons: persons,
+				changeCounter: prevState.changeCounter + 1
+			};
+		});
 	};
 
 	deletePersonHandler = personIndex => {
@@ -88,7 +96,7 @@ class App extends Component {
 		}
 
 		return (
-			<WithClass classes={myClasses.App}>
+			<Aux>
 				<button
 					onClick={() => {
 						this.setState({ showCockpit: false });
@@ -105,12 +113,12 @@ class App extends Component {
 					/>
 				) : null}
 				{persons}
-			</WithClass>
+			</Aux>
 		);
 	}
 }
 
-export default App;
+export default withClass(App, myClasses.App);
 
 // ES6 arrow functions can’t be bound to a this keyword, so it will lexically go up a scope, and use the value of this in the scope in which it was defined.
 
