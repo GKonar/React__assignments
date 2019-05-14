@@ -3,120 +3,120 @@ import myClasses from './App.module.css';
 
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+import WithClass from '../hoc/WithClass';
 
 class App extends Component {
-  constructor(props) {
-    super(props); // that will execute constructor of the component which I am extending
-    //eslint-disable-next-line no-console
-    console.log('[App.js] constructor');
-  }
+	constructor(props) {
+		super(props); // that will execute constructor of the component which I am extending
+		//eslint-disable-next-line no-console
+		console.log('[App.js] constructor');
+	}
 
-  // state does everything automatically, add constructor call super(props) and set state in the constructor //
-  state = {
-    persons: [
-      { id: 'qwe', name: 'Max', age: 28 },
-      { id: 'dsa', name: 'Manu', age: 29 },
-      { id: 'cxz', name: 'Stephanie', age: 26 },
-    ],
-    otherState: 'some other value',
-    showPersons: false,
-    showCockpit: true
-  };
+	// state does everything automatically, add constructor call super(props) and set state in the constructor //
+	state = {
+		persons: [
+			{ id: 'qwe', name: 'Max', age: 28 },
+			{ id: 'dsa', name: 'Manu', age: 29 },
+			{ id: 'cxz', name: 'Stephanie', age: 26 }
+		],
+		otherState: 'some other value',
+		showPersons: false,
+		showCockpit: true
+	};
 
-  static getDerivedStateFromProps(props, state) {
-    //eslint-disable-next-line no-console
-    console.log('[App.js] getDerivedStateFromProps', props);
-    return state;
-  }
-  
-  componentDidMount() {
-    //eslint-disable-next-line no-console
-    console.log('[App.js] componentDidMount');
-  }
+	static getDerivedStateFromProps(props, state) {
+		//eslint-disable-next-line no-console
+		console.log('[App.js] getDerivedStateFromProps', props);
+		return state;
+	}
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //eslint-disable-next-line no-console
-    console.log('[App.js] shouldComponentUpdate');
-    return true;
-  }
+	componentDidMount() {
+		//eslint-disable-next-line no-console
+		console.log('[App.js] componentDidMount');
+	}
 
-  componentDidUpdate() {
-    //eslint-disable-next-line no-console
-    console.log('[App.js] componentDidUpdate');
-  }
+	shouldComponentUpdate(nextProps, nextState) {
+		//eslint-disable-next-line no-console
+		console.log('[App.js] shouldComponentUpdate');
+		return true;
+	}
 
-  nameChangedHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex( p => { // const holds the index 
-      return p.id === id;
-    });
+	componentDidUpdate() {
+		//eslint-disable-next-line no-console
+		console.log('[App.js] componentDidUpdate');
+	}
 
-    const person = {
-      ...this.state.persons[personIndex]
-    };
+	nameChangedHandler = (event, id) => {
+		const personIndex = this.state.persons.findIndex(p => {
+			// const holds the index
+			return p.id === id;
+		});
 
-    person.name = event.target.value;
+		const person = {
+			...this.state.persons[personIndex]
+		};
 
-    const persons = [...this.state.persons];
-    persons[personIndex] = person;
+		person.name = event.target.value;
 
-    this.setState( {persons: persons} );
-  }
+		const persons = [...this.state.persons];
+		persons[personIndex] = person;
 
-  deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice();
-    const persons = [...this.state.persons];
-    persons.splice(personIndex, 1);
-    this.setState({ persons: persons });
-  }
+		this.setState({ persons: persons });
+	};
 
-  togglePersonsHandler = () => {
-    const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow });
-  }
+	deletePersonHandler = personIndex => {
+		// const persons = this.state.persons.slice();
+		const persons = [...this.state.persons];
+		persons.splice(personIndex, 1);
+		this.setState({ persons: persons });
+	};
 
-  render() {
-    //eslint-disable-next-line no-console
-    console.log('[App.js] render');
-    let persons = null;
+	togglePersonsHandler = () => {
+		const doesShow = this.state.showPersons;
+		this.setState({ showPersons: !doesShow });
+	};
 
-    if (this.state.showPersons) {
-      persons =  
-      <Persons 
-        persons = {this.state.persons}
-        clicked = {this.deletePersonHandler}
-        changed = {this.nameChangedHandler}
-      />;
-    }
+	render() {
+		//eslint-disable-next-line no-console
+		console.log('[App.js] render');
+		let persons = null;
 
-    return (
-      <div className={myClasses.App}>
-        <button onClick={() => {
-          this.setState({showCockpit: false});
-        }}>Remove Cockpit</button>
-        {this.state.showCockpit ? (
-          <Cockpit 
-            title = {this.props.appTitle}
-            persons = {this.state.persons}
-            showPersons = {this.state.showPersons}
-            toggle = {this.togglePersonsHandler}
-          />
-        ) : null}
-        {persons}
-      </div>
-    );
-  }
+		if (this.state.showPersons) {
+			persons = (
+				<Persons persons={this.state.persons} clicked={this.deletePersonHandler} changed={this.nameChangedHandler} />
+			);
+		}
+
+		return (
+			<WithClass classes={myClasses.App}>
+				<button
+					onClick={() => {
+						this.setState({ showCockpit: false });
+					}}
+				>
+					Remove Cockpit
+				</button>
+				{this.state.showCockpit ? (
+					<Cockpit
+						title={this.props.appTitle}
+						personsLength={this.state.persons.length}
+						showPersons={this.state.showPersons}
+						toggle={this.togglePersonsHandler}
+					/>
+				) : null}
+				{persons}
+			</WithClass>
+		);
+	}
 }
 
 export default App;
 
 // ES6 arrow functions can’t be bound to a this keyword, so it will lexically go up a scope, and use the value of this in the scope in which it was defined.
 
-
 // For performance reasons React only makes a shallow identity check when it decides if something has to be rerendered. That means React only looks whether the reference has changed, it doesn't check the content. For this reason you have to make sure on your own that the reference changes each time when the content is modified (by modifying a copy and not the original array).
-
 
 // By manipulating this.state directly you are circumventing React’s state management, which can be potentially dangerous as calling setState() afterwards may replace the mutation you made.
 
-
-// IMPORTANT 
+// IMPORTANT
 // In the class based components props are access with the this keyword
